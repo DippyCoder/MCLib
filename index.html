@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MCLib Addon Browser</title>
+<meta name="description" content="Browse addons for MCPanel-CLI, MCPanel and MCPanel-WebUI.">
+<style>
+  :root {
+    --bg: #f6f6f9; --surface: #ffffff; --text: #1b1b24; --muted: #62627a;
+    --border: #e1e1ea; --accent: #7b2fbe; --accent-soft: #f1e7fa;
+    --warn-bg: #fff7e6; --warn-border: #f0d9a8; --warn-text: #6b4a00;
+    --code-bg: #f0f0f5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121218; --surface: #1c1c25; --text: #ececf3; --muted: #9a9ab2;
+      --border: #2d2d3a; --accent: #b77cf0; --accent-soft: #2b1f3a;
+      --warn-bg: #2a2212; --warn-border: #4d3d1a; --warn-text: #f0d08a;
+      --code-bg: #262631;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  a { color: var(--accent); }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 32px 16px 64px; }
+  header h1 { margin: 0 0 4px; font-size: 1.6rem; }
+  header p { margin: 0; color: var(--muted); }
+  header nav { margin-top: 10px; display: flex; gap: 16px; flex-wrap: wrap; font-size: .9rem; }
+  .notice { margin: 20px 0; padding: 12px 14px; border-radius: 8px; font-size: .88rem;
+            background: var(--warn-bg); border: 1px solid var(--warn-border); color: var(--warn-text); }
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 20px 0 16px; }
+  .controls input { flex: 1 1 240px; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border);
+                    background: var(--surface); color: var(--text); font: inherit; }
+  .chip { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface);
+          color: var(--text); cursor: pointer; font: inherit; font-size: .85rem; }
+  .chip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .count { color: var(--muted); font-size: .85rem; margin-bottom: 10px; }
+  .grid { display: grid; gap: 12px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .card h2 { margin: 0; font-size: 1.1rem; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .card .desc { margin: 6px 0 10px; }
+  .meta { display: flex; gap: 6px 16px; flex-wrap: wrap; color: var(--muted); font-size: .85rem; }
+  .tag { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: .75rem;
+         background: var(--accent-soft); color: var(--accent); }
+  .platform { font-size: .75rem; color: var(--muted); }
+  .actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  button.small { padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border);
+                 background: transparent; color: var(--text); cursor: pointer; font: inherit; font-size: .82rem; }
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: .82rem;
+         overflow-wrap: anywhere; }
+  .releases { margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px; font-size: .85rem; }
+  .releases ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .releases li { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .releases .ver { font-weight: 600; min-width: 90px; }
+  .muted { color: var(--muted); }
+  .empty { padding: 32px; text-align: center; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1 id="lib-name">MCLib</h1>
+    <p id="lib-desc">The addon library for MCPanel-CLI, MCPanel and MCPanel-WebUI.</p>
+    <nav>
+      <a href="TOS.md" id="tos-link">Terms of Service</a>
+      <a href="https://github.com/DippyCoder/MCLib/issues/new/choose" id="submit-link">Submit or appeal an addon</a>
+      <a href="https://github.com/DippyCoder/MCLib" id="repo-link">Repository</a>
+    </nav>
+  </header>
+
+  <div class="notice">
+    <strong>Third-party software.</strong> Addons are written by their listed authors, not by the MCPanel
+    or MCLib maintainers, and run with full access to your MCPanel install. The creators of MCPanel and MCLib
+    are not liable for any harm caused by an addon. Install only what you trust.
+  </div>
+
+  <div class="controls">
+    <input id="q" type="search" placeholder="Search name, description or author…" aria-label="Search addons">
+    <button class="chip" data-product="" aria-pressed="true">All</button>
+    <button class="chip" data-product="cli" aria-pressed="false">MCPanel-CLI</button>
+    <button class="chip" data-product="mcpanel" aria-pressed="false">MCPanel</button>
+    <button class="chip" data-product="webui" aria-pressed="false">MCPanel-WebUI</button>
+  </div>
+  <div class="count" id="count"></div>
+  <div class="grid" id="list"><div class="empty">Loading…</div></div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  // index.json next to this page (GitHub Pages / a checkout served over http),
+  // falling back to the published copy when opened straight from disk.
+  const SOURCES = ['index.json', 'https://raw.githubusercontent.com/DippyCoder/MCLib/main/index.json'];
+  const PRODUCT_NAMES = { cli: 'MCPanel-CLI', mcpanel: 'MCPanel', webui: 'MCPanel-WebUI' };
+  let addons = [];
+  let product = '';
+
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  function parseProject(url) {
+    const m = /^https:\/\/(github\.com|codeberg\.org)\/([^/]+)\/([^/]+?)(?:\.git)?\/?$/.exec(url || '');
+    return m ? { host: m[1], owner: m[2], repo: m[3] } : null;
+  }
+
+  async function loadIndex() {
+    for (const src of SOURCES) {
+      try {
+        const res = await fetch(src, { cache: 'no-cache' });
+        if (res.ok) return await res.json();
+      } catch { /* try the next source */ }
+    }
+    throw new Error('Could not load index.json');
+  }
+
+  function matches(a, q) {
+    if (product && !(a.products || []).includes(product)) return false;
+    if (!q) return true;
+    const hay = [a.name, a.description, (a.authors || []).join(' ')].join(' ').toLowerCase();
+    return hay.includes(q);
+  }
+
+  function render() {
+    const q = $('q').value.trim().toLowerCase();
+    const shown = addons.filter((a) => matches(a, q));
+    $('count').textContent = `${shown.length} of ${addons.length} addon${addons.length === 1 ? '' : 's'}`;
+    if (!shown.length) {
+      $('list').innerHTML = '<div class="empty">No addons match.</div>';
+      return;
+    }
+    $('list').innerHTML = shown.map((a) => {
+      const p = parseProject(a.project);
+      const platform = p ? (p.host === 'github.com' ? 'GitHub' : 'Codeberg') : 'unsupported platform';
+      return `
+      <article class="card" data-name="${esc(a.name)}">
+        <h2>${esc(a.name)} ${(a.products || []).map((x) => `<span class="tag">${esc(PRODUCT_NAMES[x] || x)}</span>`).join(' ')}</h2>
+        <p class="desc">${esc(a.description)}</p>
+        <div class="meta">
+          <span>By ${esc((a.authors || []).join(', ') || 'unknown')}</span>
+          <span><a href="${esc(a.project)}" rel="noopener" target="_blank">${esc(p ? `${p.owner}/${p.repo}` : a.project)}</a>
+                <span class="platform">· ${platform}</span></span>
+        </div>
+        <div class="actions">
+          <code>mcpanel mclib mclib install ${esc(a.name)}</code>
+          <button class="small" data-copy="mcpanel mclib mclib install ${esc(a.name)}">Copy</button>
+          <button class="small" data-releases="${esc(a.name)}">Releases</button>
+        </div>
+        <div class="releases" hidden></div>
+      </article>`;
+    }).join('');
+  }
+
+  async function fetchReleases(project) {
+    const p = parseProject(project);
+    if (!p) throw new Error('Only GitHub and Codeberg projects are supported');
+    const api = p.host === 'github.com'
+      ? `https://api.github.com/repos/${p.owner}/${p.repo}/releases?per_page=20`
+      : `https://codeberg.org/api/v1/repos/${p.owner}/${p.repo}/releases?limit=20`;
+    const res = await fetch(api);
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+    return (await res.json()).filter((r) => !r.draft);
+  }
+
+  async function toggleReleases(btn) {
+    const card = btn.closest('.card');
+    const box = card.querySelector('.releases');
+    if (!box.hidden) { box.hidden = true; return; }
+    box.hidden = false;
+    const addon = addons.find((a) => a.name === card.dataset.name);
+    box.innerHTML = '<span class="muted">Loading releases…</span>';
+    try {
+      const rels = await fetchReleases(addon.project);
+      if (!rels.length) { box.innerHTML = '<span class="muted">No releases published yet.</span>'; return; }
+      box.innerHTML = '<ul>' + rels.map((r) => {
+        const cmd = `mcpanel mclib mclib install ${addon.name} ${r.tag_name}`;
+        const date = (r.published_at || r.created_at || '').slice(0, 10);
+        return `<li><span class="ver">${esc(r.tag_name)}</span>
+          <span class="muted">${esc(date)}${r.prerelease ? ' · pre-release' : ''}</span>
+          <button class="small" data-copy="${esc(cmd)}">Copy install command</button></li>`;
+      }).join('') + '</ul>';
+    } catch (e) {
+      box.innerHTML = `<span class="muted">Could not load releases: ${esc(e.message)}</span>`;
+    }
+  }
+
+  document.addEventListener('click', async (ev) => {
+    const chip = ev.target.closest('.chip');
+    if (chip) {
+      product = chip.dataset.product;
+      document.querySelectorAll('.chip').forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+      render();
+      return;
+    }
+    const copy = ev.target.closest('[data-copy]');
+    if (copy) {
+      try {
+        await navigator.clipboard.writeText(copy.dataset.copy);
+        const old = copy.textContent;
+        copy.textContent = 'Copied';
+        setTimeout(() => { copy.textContent = old; }, 1200);
+      } catch { /* clipboard unavailable */ }
+      return;
+    }
+    const rel = ev.target.closest('[data-releases]');
+    if (rel) toggleReleases(rel);
+  });
+  $('q').addEventListener('input', render);
+
+  loadIndex().then((index) => {
+    addons = Array.isArray(index.addons) ? index.addons : [];
+    if (index.name) $('lib-name').textContent = index.name;
+    if (index.description) $('lib-desc').textContent = index.description;
+    if (index.tos) $('tos-link').href = index.tos;
+    if (index.issues) $('submit-link').href = index.issues.replace(/\/$/, '') + '/new/choose';
+    if (index.homepage) $('repo-link').href = index.homepage;
+    render();
+  }).catch((e) => {
+    $('list').innerHTML = `<div class="empty">${esc(e.message)}</div>`;
+  });
+})();
+</script>
+</body>
+</html>

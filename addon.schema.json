@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/DippyCoder/MCLib/main/addon.schema.json",
+  "title": "MCLib addon entry",
+  "description": "One file per addon in addons/<name>.json. tools/build_index.py validates these and builds index.json.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "description", "project", "authors", "products"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$",
+      "description": "Unique name, used in `mcpanel mclib mclib install <name>`. Must match the file name."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "project": {
+      "type": "string",
+      "pattern": "^https://(github\\.com|codeberg\\.org)/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$",
+      "description": "The addon's repository. Only GitHub and Codeberg are allowed; versions are pulled from its releases."
+    },
+    "authors": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "products": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["cli", "mcpanel", "webui"] },
+      "description": "Which MCPanel product(s) the addon is for: MCPanel-CLI, the MCPanel desktop app, MCPanel-WebUI. Every addon is installed into and runs inside MCPanel-CLI."
+    }
+  }
+}

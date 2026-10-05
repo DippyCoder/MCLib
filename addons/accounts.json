@@ -1,0 +1,7 @@
+{
+  "name": "accounts",
+  "description": "User accounts, roles and permissions (SQLite-backed). Required by MCPanel-WebUI for sign-in.",
+  "project": "https://github.com/DippyCoder/MCPanel-Accounts",
+  "authors": ["DippyCoder"],
+  "products": ["cli", "webui"]
+}

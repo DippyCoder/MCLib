@@ -1,0 +1,56 @@
+name: Submit an addon
+description: Ask for an addon to be listed in MCLib.
+title: "[Submit] <addon name>"
+labels: ["submission"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Fill in the entry exactly as it should appear in `addons/<name>.json`.
+        Only **GitHub** and **Codeberg** repositories can be listed, and installs come from the repository's **releases** — see the [Terms of Service](https://github.com/DippyCoder/MCLib/blob/main/TOS.md).
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      description: Unique; letters, digits, `.`, `_`, `-`. Users run `mcpanel mclib mclib install <name>`.
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: One or two sentences, max 300 characters.
+    validations:
+      required: true
+  - type: input
+    id: project
+    attributes:
+      label: Project URL
+      placeholder: https://github.com/<owner>/<repo>  or  https://codeberg.org/<owner>/<repo>
+    validations:
+      required: true
+  - type: input
+    id: authors
+    attributes:
+      label: Authors
+      description: Comma-separated.
+    validations:
+      required: true
+  - type: checkboxes
+    id: products
+    attributes:
+      label: Which MCPanel product is it for?
+      description: Every addon installs into and runs inside MCPanel-CLI; this says which product it's meant to extend.
+      options:
+        - label: MCPanel-CLI (cli)
+        - label: MCPanel desktop app (mcpanel)
+        - label: MCPanel-WebUI (webui)
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Terms
+      options:
+        - label: The repository is public on GitHub or Codeberg and has at least one release containing the addon package.
+          required: true
+        - label: I have read and accept the MCLib Terms of Service, including that MCLib and MCPanel are not liable for my addon.
+          required: true

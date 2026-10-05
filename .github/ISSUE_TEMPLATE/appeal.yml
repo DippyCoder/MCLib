@@ -1,0 +1,30 @@
+name: Appeal
+description: Appeal a rejected submission, a removal, or a change to your addon's entry.
+title: "[Appeal] <addon name>"
+labels: ["appeal"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Addon name
+    validations:
+      required: true
+  - type: input
+    id: reference
+    attributes:
+      label: Related issue or commit
+      description: The submission issue, removal commit, or report this appeal is about.
+  - type: textarea
+    id: reason
+    attributes:
+      label: Why should the decision change?
+      description: Explain what was wrong with the decision or what you've fixed since.
+    validations:
+      required: true
+  - type: checkboxes
+    id: owner
+    attributes:
+      label: Confirmation
+      options:
+        - label: I am an author of this addon (or authorised by one).
+          required: true

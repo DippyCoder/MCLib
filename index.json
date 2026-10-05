@@ -1,0 +1,22 @@
+{
+  "name": "MCLib",
+  "description": "The addon library for MCPanel-CLI, MCPanel and MCPanel-WebUI.",
+  "homepage": "https://github.com/DippyCoder/MCLib",
+  "tos": "https://github.com/DippyCoder/MCLib/blob/main/TOS.md",
+  "issues": "https://github.com/DippyCoder/MCLib/issues",
+  "schema": 1,
+  "addons": [
+    {
+      "name": "accounts",
+      "description": "User accounts, roles and permissions (SQLite-backed). Required by MCPanel-WebUI for sign-in.",
+      "project": "https://github.com/DippyCoder/MCPanel-Accounts",
+      "authors": [
+        "DippyCoder"
+      ],
+      "products": [
+        "cli",
+        "webui"
+      ]
+    }
+  ]
+}
