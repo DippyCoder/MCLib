@@ -17,6 +17,18 @@
         "cli",
         "webui"
       ]
+    },
+    {
+      "name": "databases",
+      "description": "A Databases page for MCPanel and MCPanel-WebUI: browse and manage the MySQL / MariaDB servers on the panel's machine (saved accounts, databases, tables and rows).",
+      "project": "https://github.com/MCPanel-Studios/MCPanel-Databases",
+      "authors": [
+        "DippyCoder"
+      ],
+      "products": [
+        "mcpanel",
+        "webui"
+      ]
     }
   ]
 }
