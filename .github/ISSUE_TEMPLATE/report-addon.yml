@@ -1,22 +1,32 @@
-name: Report an addon
-description: Report a malicious addon.
-title: "[Report] <addon name>"
+name: Report an addon or theme
+description: Report a malicious, misleading or broken addon or theme.
+title: "[Report] <addon or theme name>"
 labels: ["report"]
 body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Addon or theme?
+      options:
+        - Addon
+        - Theme
+    validations:
+      required: true
   - type: input
     id: name
     attributes:
-      label: Addon name
+      label: Name
     validations:
       required: true
   - type: input
     id: version
     attributes:
       label: Version (release tag)
+      description: The release of the addon's or theme's repository the problem is in.
   - type: textarea
     id: details
     attributes:
       label: What's wrong?
-      description: 
+      description: Include proof — logs, screenshots, or the offending code/CSS.
     validations:
       required: true

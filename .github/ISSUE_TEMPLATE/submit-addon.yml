@@ -1,7 +1,7 @@
 name: Submit an addon
 description: Ask for an addon to be listed in MCLib.
-title: "[Submit] <addon name>"
-labels: ["submission"]
+title: "[Submit] <addon name> (addon)"
+labels: ["submission", "addon"]
 body:
   - type: markdown
     attributes:

@@ -1,0 +1,26 @@
+{
+  "name": "MCLib",
+  "description": "The community theme library for MCPanel and MCPanel-WebUI.",
+  "homepage": "https://github.com/DippyCoder/MCLib",
+  "tos": "https://github.com/DippyCoder/MCLib/blob/main/TOS.md",
+  "issues": "https://github.com/DippyCoder/MCLib/issues",
+  "schema": 1,
+  "themes": [
+    {
+      "name": "monotone",
+      "description": "Greyscale dark theme in the style of Android dark mode.",
+      "project": "https://github.com/DippyCoder/monotone",
+      "authors": [
+        "DippyCoder"
+      ]
+    },
+    {
+      "name": "monotone-inverted",
+      "description": "Pure greyscale light theme. Monotone on a white background.",
+      "project": "https://github.com/DippyCoder/monotone-inverted",
+      "authors": [
+        "DippyCoder"
+      ]
+    }
+  ]
+}

@@ -2,4 +2,4 @@ blank_issues_enabled: false
 contact_links:
   - name: Terms of Service
     url: https://github.com/DippyCoder/MCLib/blob/main/TOS.md
-    about: Read the terms before submitting — only GitHub and Codeberg projects can be listed.
+    about: Read the terms before submitting — only GitHub and Codeberg projects can be listed (addons and themes), installs come from their releases, and themes may only contain styling.

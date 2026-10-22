@@ -1,14 +1,19 @@
 # MCLib
 
-The addon library for **MCPanel-CLI**, **MCPanel** (desktop) and **MCPanel-WebUI**.
+The addon and theme library for **MCPanel-CLI**, **MCPanel** (desktop) and **MCPanel-WebUI**.
+
+>**Note:** MCLib and all MCPanel related repositorys will be at [MCPanel-Studios](https://github.com/MCPanel-Studios) soon!
 
 MCLib is an index: one small JSON file per addon, pointing at the addon's own
 GitHub or Codeberg repository. MCLib never hosts addon code — MCPanel-CLI
 downloads it straight from the addon's **releases**.
 
-> **Third-party software.** Addons are written by their listed authors, not by
+MCLib lists **community themes** for MCPanel and MCPanel-WebUI the same way,
+in a separate [`themes-index.json`](themes-index.json) — see [Themes](#themes).
+
+> **Third-party software.** Addons and themes are written by their listed authors, not by
 > the MCPanel or MCLib maintainers. The creators of MCPanel and MCLib are not
-> liable for any harm an addon causes. Read the [Terms of Service](TOS.md).
+> liable for any harm an addon or theme causes. Read the [Terms of Service](TOS.md).
 
 ## Browsing
 
@@ -116,15 +121,51 @@ Every published tag becomes an installable version.
 by opening an issue, with the *Appeal* template. Malicious or broken addons are
 reported with *Report an addon*.
 
+## Themes
+
+Themes change how MCPanel and MCPanel-WebUI look. They're listed exactly like
+addons: one `themes/<name>.json` per theme, pointing at the theme's own GitHub
+or Codeberg repository, built into [`themes-index.json`](themes-index.json)
+(addons stay in `index.json`). MCLib never
+hosts theme files — the apps install the `.zip` attached to the theme's newest
+stable **release**, and the release tag is the theme's version.
+
+Both apps read two theme catalogues and show them together in **Settings →
+Themes → Browse Online**:
+
+| Source | Where | What's there |
+|---|---|---|
+| MCPanel | [`DippyCoder/MCPanel@themes`](https://github.com/DippyCoder/MCPanel/tree/themes) | The official themes |
+| MCLib | [`themes-index.json`](themes-index.json) on `main` | Community themes (marked *MCLib*) |
+
+A theme is a folder with a `theme.json` (metadata) and a `theme.css` (CSS
+overrides), zipped. The format, the CSS variables, the pack script and the
+entry format are documented in [`THEMES.md`](THEMES.md).
+
+```json
+{
+  "name": "monotone",
+  "description": "Greyscale dark theme in the style of Android dark mode.",
+  "project": "https://github.com/DippyCoder/monotone",
+  "authors": ["DippyCoder"]
+}
+```
+
+**To get a theme listed, open an issue** with the *Submit a theme* template. A
+maintainer reviews it and adds the entry. New releases need no new submission.
+Themes are reported and appealed with the *Report* and *Appeal* templates, like
+addons.
+
 ## Maintaining
 
 ```bash
-python3 tools/build_index.py          # validate addons/*.json and rebuild index.json
+python3 tools/build_index.py          # validate addons/ + themes/, rebuild index.json + themes-index.json
 python3 tools/build_index.py --check  # what CI runs
 ```
 
 The validator enforces the terms that can be checked mechanically — required
-fields, the name/file match, unique names and the GitHub/Codeberg-only rule.
+fields, the name/file match, unique names and the GitHub/Codeberg-only rule —
+for addons and themes alike.
 
 ## Layout
 
@@ -132,9 +173,14 @@ fields, the name/file match, unique names and the GitHub/Codeberg-only rule.
 MCLib/
 ├── addons/<name>.json   ← one entry per addon (the source of truth)
 ├── index.json           ← generated; what MCPanel-CLI and index.html read
+├── themes/<name>.json   ← one entry per theme (the source of truth)
+├── themes-index.json    ← generated; what MCPanel and MCPanel-WebUI read
 ├── index.html           ← the browser
-├── addon.schema.json    ← JSON Schema for an entry
+├── addon.schema.json    ← JSON Schema for an addon entry
+├── theme.schema.json    ← JSON Schema for a theme entry
 ├── TOS.md               ← terms of service
-├── tools/build_index.py ← validator + index builder
-└── .github/             ← issue templates (submit / appeal / report) and CI
+├── THEMES.md            ← making, releasing and submitting themes
+├── tools/build_index.py ← validator + builder for both indexes
+├── tools/pack-theme.js  ← zips a theme folder for a release
+└── .github/             ← issue templates (submit addon / submit theme / appeal / report) and CI
 ```

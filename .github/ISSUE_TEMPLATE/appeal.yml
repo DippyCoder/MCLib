@@ -1,12 +1,21 @@
 name: Appeal
-description: Appeal a rejected submission, a removal, or a change to your addon's entry.
-title: "[Appeal] <addon name>"
+description: Appeal a rejected submission, a removal, or a change to your addon's or theme's entry.
+title: "[Appeal] <addon or theme name>"
 labels: ["appeal"]
 body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Addon or theme?
+      options:
+        - Addon
+        - Theme
+    validations:
+      required: true
   - type: input
     id: name
     attributes:
-      label: Addon name
+      label: Name
     validations:
       required: true
   - type: input
@@ -26,5 +35,5 @@ body:
     attributes:
       label: Confirmation
       options:
-        - label: I am an author of this addon (or authorised by one).
+        - label: I am an author of this addon or theme (or authorised by one).
           required: true

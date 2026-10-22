@@ -1,0 +1,54 @@
+name: Submit a theme
+description: Ask for a theme to be listed in MCLib.
+title: "[Submit] <theme name> (theme)"
+labels: ["submission", "theme"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Fill in the entry exactly as it should appear in `themes/<name>.json` (see [THEMES.md](https://github.com/DippyCoder/MCLib/blob/main/THEMES.md)).
+        Only **GitHub** and **Codeberg** repositories can be listed. Installs come from the repository's **releases**: each needs a `.zip` asset with your `theme.json` and `theme.css`, and the release tag is the version — see section 6 of the [Terms of Service](https://github.com/DippyCoder/MCLib/blob/main/TOS.md).
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      description: Unique; letters, digits, `.`, `_`, `-`.
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: One or two sentences, max 300 characters. Shown in the theme browser.
+    validations:
+      required: true
+  - type: input
+    id: project
+    attributes:
+      label: Project URL
+      placeholder: https://github.com/<owner>/<repo>  or  https://codeberg.org/<owner>/<repo>
+    validations:
+      required: true
+  - type: input
+    id: authors
+    attributes:
+      label: Authors
+      description: Comma-separated.
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Optional — MCPanel or MCPanel-WebUI with the theme applied.
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Terms
+      options:
+        - label: The repository is public on GitHub or Codeberg and has at least one release with a .zip asset containing the theme.
+          required: true
+        - label: The theme contains only CSS and static assets (no scripts) and loads nothing from the internet.
+          required: true
+        - label: I have read and accept the MCLib Terms of Service, including that MCLib and MCPanel are not liable for my theme.
+          required: true

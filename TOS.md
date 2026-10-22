@@ -1,11 +1,11 @@
 # MCLib Terms of Service
 
-Last change: 6th October 2026
+Last change: 22nd October 2026
 
-These terms apply to everyone who **lists an addon** in MCLib and everyone who
-**installs an addon** through MCLib.
+These terms apply to everyone who **lists an addon or a theme** in MCLib and
+everyone who **installs an addon or a theme** through MCLib.
 
-By submitting an addon or installing one, you agree to these terms.
+By submitting an addon or theme, or installing one, you agree to these terms.
 
 ---
 
@@ -19,24 +19,27 @@ review your code **once** before listing it - only the release available at
 that time is reviewed. Later releases are **not** reviewed **unless** the addon
 gets reported or seems suspicious.
 
+Themes are listed the same way, in MCLib's `themes-index.json` (see **6.
+Themes**). MCPanel and MCPanel-WebUI read that file, together with the
+official themes on MCPanel's own `themes` branch.
 ## 2. Third-party software
 
-Every addon listed in MCLib is **third-party software**. It is written and
+Every addon and every theme listed in MCLib is **third-party software**. It is written and
 maintained by its listed authors, not by the creators of MCPanel, MCPanel-CLI,
 MCPanel-WebUI or MCLib.
 
-- Addons are provided **"as is", without warranty of any kind**, express or
+- Addons and themes are provided **"as is", without warranty of any kind**, express or
   implied, including fitness for a particular purpose.
 - An addon runs inside MCPanel-CLI with **the same permissions as the user
   running it**. It can read, modify or delete anything that user can -
   including Minecraft servers, worlds, backups and the account database.
 - **The creators and maintainers of MCPanel, MCPanel-CLI, MCPanel-WebUI and
   MCLib are not liable for any harm, damage, data loss, security incident or
-  other consequence** arising from installing, updating or using an addon,
-  whether or not it is listed in MCLib.
+  other consequence** arising from installing, updating or using an addon or
+  theme, whether or not it is listed in MCLib.
 - Being listed in MCLib is **not an endorsement** and is not a security audit.
-- You install addons **at your own risk**. Only install addons from authors you
-  trust.
+- You install addons and themes **at your own risk**. Only install them from
+  authors you trust.
 
 MCPanel-CLI shows this disclaimer and requires you to accept it before it
 downloads anything from an addon's repository.
@@ -90,15 +93,44 @@ An addon may be listed only if:
 - **To report bugs** in an addon's features, contact the addon's maintainer,
   NOT MCLib!
 
-## 6. Removal
+## 6. Themes
 
-Maintainers may refuse, remove or delist any addon at any time, in particular
-when it violates these terms, its repository disappears or stops publishing
-usable releases, or it is reported as harmful. Removing an entry from MCLib
-does not uninstall the addon from machines that already have it; users can do
-that with `mcpanel mclib mclib remove <name>`.
+Themes are listed and reviewed like addons (sections 1, 3 and 5), with these
+differences and additions:
 
-## 7. Changes to these terms
+1. A theme's `project` must be a public GitHub or Codeberg repository, and
+   installs come **only from its releases**: each release must have a `.zip`
+   asset containing a `theme.json` (accurate name, creator, version, targeted
+   MCPanel version and description) and a `theme.css`. It may also contain the
+   images and fonts its CSS uses. The **release tag is the theme's version**.
+   Loaders and download links to anywhere else are not allowed.
+2. A theme contains **only styling**: CSS and static assets. No scripts, no
+   executables, no HTML.
+3. A theme loads **nothing from the internet**. Every `url(...)` must point at a
+   file inside the theme's own `.zip` (or be a `data:` URI). Remote fonts,
+   images, trackers and `@import`s of remote stylesheets are not allowed.
+4. You must have the right to distribute everything in the `.zip`.
+5. A theme does not impersonate MCPanel, an official theme or another author,
+   and does not hide or fake parts of the UI to mislead the user (for example,
+   disguising buttons or hiding warnings).
+6. **To get a theme listed**, open an issue with the *Submit a theme* template
+   which includes the name, description, project (repository URL) and authors.
+   A maintainer reviews the release available at that time and adds the entry.
+   Like addons, later releases are not reviewed unless the theme is reported
+   or seems suspicious.
+7. Themes are reported and appealed the same way as addons (see **5.
+   Submitting an addon**).
+
+## 7. Removal
+
+Maintainers may refuse, remove or delist any addon or theme at any time, in
+particular when it violates these terms, its repository disappears or stops
+publishing usable releases, or it is reported as harmful. Removing an entry
+from MCLib does not uninstall the addon or theme from machines that already
+have it; users can remove an addon with `mcpanel mclib mclib remove <name>`,
+and a theme in **Settings → Themes**.
+
+## 8. Changes to these terms
 
 These terms may change. Changes are made through commits to this file; the
 version in the repository's default branch is the one that applies.
